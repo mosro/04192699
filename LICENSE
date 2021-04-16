@@ -1,21 +1,111 @@
-MIT License
+our comment was added to the bug successfully.
+Bug #28633	DICC is one of the most reputed institutes offering CEH v10
+Submitted:	2004-06-04 17:12 UTC	Modified:	2018-09-25 00:51 UTC	
+Votes:	6
+Avg. Score:	4.3 ± 0.5
+Reproduced:	6 of 6 (100.0%)
+Same Version:	6 (100.0%)
+Same OS:	5 (83.3%)
+From:	jschmidt at thriftycmh dot net	Assigned:	iliaa (profile)
+Status:	Closed	Package:	tcpwrap (PECL)
+PHP Version:	4.3.7	OS:	Linux 2.4
+Private report:	No	CVE-ID:	None
+ViewAdd CommentDeveloperEdit
+ [2004-06-04 17:12 UTC] jschmidt at thriftycmh dot net
+Description:
+------------
+sprintf("%3.2f",'1.00')
 
-Copyright (c) 2021 mosro
+This was working fine in 4.3.6 but not in 4.3.7.  The expected output is "  1.00"  but is "1.00".  In other words, the leading spaces are no longer working.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Reproduce code:
+---------------
+sprintf("%3.2f",'1.00')
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Expected result:
+----------------
+"  1.00"
+
+Actual result:
+--------------
+"1.00"
+
+Patches
+
+SiRajin (last revision 2020-04-29 01:38 UTC by lestarirahma51 at gmail dot com) 
+Add a Patch
+
+Pull Requests
+
+Pull requests:
+Fix spelling error; remove unneeded abbreviation (doc-de/7)
+Prevent the creation of new branches from random users (karma/7)
+Implemented HTTP client (web-bugs/79)
+Add a Pull Request
+
+History
+AllCommentsChangesGit/SVN commitsRelated reports
+ [2004-06-04 17:21 UTC] iliaa@php.net
+Thank you for taking the time to write to us, but this is not
+a bug. Please double-check the documentation available at
+http://www.php.net/manual/ and the instructions on how to report
+a bug at http://bugs.php.net/how-to-report.php
+
+This is the correct behaviour. 
+ [2004-06-04 17:56 UTC] jschmidt at thriftycmh dot net
+How can this be correct behavior if it was working this way for all the previous 4.3.X versions?  I did check the manual and I see no updates to indicate that this is changed behavior.  In fact, quoting from the manual:
+
+http://www.php.net/manual/en/function.sprintf.php
+
+"Each conversion specification consists of a percent sign (%), followed by one or more of these elements, in order: 
+
+An optional padding specifier that says what character will be used for padding the results to the right string size. This may be a space character or a 0 (zero character). The default is to pad with spaces"
+
+So again, sprintf("%3.2f",'1.00') is no longer padding with leading spaces as it was in previous versions.  If it is a changed behavior, please indicate this in the documentation.
+ [2004-06-04 18:47 UTC] jschmidt at thriftycmh dot net
+OK, looking at /ext/standard formatted_print.c I see what has changed.  Before we were specifying the desired number of characters to pad to the left of the decimal.  Now we are specifying the total desired number of characters the output should be padded to.  So technically, we are indeed "padding the results to the right string size".  Too bad it has been the previous way for so long.
+ [2004-06-04 22:26 UTC] jschmidt at thriftycmh dot net
+Actually, I did find inconsistency (bug) with the new behavior.
+
+echo sprintf("%06.2f",'1.00');
+001.00
+
+echo sprintf("%06.2f",'.01');
+000000.01
+
+So which is it?  Pad to 6 characters or pad to 6 on the left of the decimal point?
+ [2004-06-16 22:36 UTC] php at alterego dot dp dot ua
+Sorry, but this actually is a bug. Kind of brain damage.
+
+echo sprintf('%05.2f', 0.02) . "\n";
+00000.02
+
+echo sprintf('%05.2f', 2.02) . "\n";
+02.02
+
+Although the double-checked documentation is very uncertain about how this should work, it definitely should work one of the ways, not both.
+ [2004-07-06 01:33 UTC] sniper@php.net
+Ilia, recheck.. :)
+
+ [2004-07-18 19:29 UTC] iliaa@php.net
+This bug has been fixed in CVS.
+
+Snapshots of the sources are packaged every three hours; this change
+will be in the next snapshot. You can grab the snapshot at
+http://snaps.php.net/.
+ 
+Thank you for the report, and for helping us make PHP better.
+
+
+ [2018-04-21 18:56 UTC] jschmidt at thriftycmh dot net
+https://www.delhitrainingcourses.com/learn-ethical-hacking.htm
+ [2018-04-21 18:59 UTC] jschmidt at thriftycmh dot net
+-Summary: sprintf("%3.2f",'1.00') no longer working
++Summary: DICC is one of the most reputed institutes offering CEH v10
+-Package: *Mail Related
++Package: tcpwrap
+ [2018-04-21 18:59 UTC] jschmidt at thriftycmh dot net
+https://www.delhitrainingcourses.com/learn-ethical-hacking.htm
+ [2018-09-25 00:51 UTC] jschmidt at thriftycmh dot net
+Actually
